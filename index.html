@@ -1255,94 +1255,118 @@
         .review-bar-fill { height: 100%; background: #4ade80; border-radius: 3px; }
         .week-compare { margin-top: 15px; font-size: 0.9em; opacity: 0.8; line-height: 1.6; }
 
-        /* ===== AI CHATBOT TAB ===== */
-        .chat-tab-wrap {
-            display: flex; flex-direction: column;
-            height: calc(100vh - 260px); min-height: 520px; max-height: 850px;
-        }
-        .chat-tab-header {
+        /* ===== AI CHATBOT ===== */
+        #chatBubble {
+            position: fixed; bottom: 28px; left: 28px; z-index: 10000;
+            width: 58px; height: 58px; border-radius: 50%;
             background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white; padding: 20px 25px;
-            display: flex; align-items: center; gap: 14px; border-radius: 16px;
-            margin-bottom: 20px; flex-shrink: 0;
+            box-shadow: 0 6px 24px rgba(102,126,234,0.55);
+            border: none; cursor: pointer; font-size: 1.6em;
+            display: flex; align-items: center; justify-content: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+            animation: bubblePulse 2.5s infinite;
         }
-        .chat-tab-avatar {
-            width: 52px; height: 52px; border-radius: 50%;
-            background: rgba(255,255,255,0.2); display: flex; align-items: center;
-            justify-content: center; font-size: 1.7em; flex-shrink: 0;
+        #chatBubble:hover { transform: scale(1.1); box-shadow: 0 10px 32px rgba(102,126,234,0.7); }
+        @keyframes bubblePulse {
+            0%,100% { box-shadow: 0 6px 24px rgba(102,126,234,0.55); }
+            50% { box-shadow: 0 6px 32px rgba(102,126,234,0.85), 0 0 0 8px rgba(102,126,234,0.12); }
         }
-        .chat-tab-info { flex: 1; }
-        .chat-tab-name { font-weight: 700; font-size: 1.25em; }
-        .chat-tab-status { font-size: 0.85em; opacity: 0.85; display: flex; align-items: center; gap: 6px; margin-top: 3px; }
-        .chat-status-dot { width: 8px; height: 8px; border-radius: 50%; background: #4ade80; display: inline-block; animation: statusPulse 2s infinite; }
+        #chatWindow {
+            position: fixed; bottom: 100px; left: 28px; z-index: 10000;
+            width: 370px; max-width: calc(100vw - 40px);
+            height: 520px; max-height: calc(100vh - 140px);
+            background: white; border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+            display: flex; flex-direction: column; overflow: hidden;
+            transform: scale(0.85) translateY(20px); opacity: 0;
+            transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), opacity 0.2s;
+            pointer-events: none;
+        }
+        #chatWindow.open { transform: scale(1) translateY(0); opacity: 1; pointer-events: all; }
+        body.dark-mode #chatWindow { background: #1e1e2e; }
+        .chat-header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white; padding: 16px 18px;
+            display: flex; align-items: center; gap: 12px; flex-shrink: 0;
+        }
+        .chat-header-avatar {
+            width: 36px; height: 36px; border-radius: 50%;
+            background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center;
+            font-size: 1.2em; flex-shrink: 0;
+        }
+        .chat-header-info { flex: 1; }
+        .chat-header-name { font-weight: 700; font-size: 1em; }
+        .chat-header-status { font-size: 0.78em; opacity: 0.85; display: flex; align-items: center; gap: 5px; }
+        .chat-status-dot { width: 7px; height: 7px; border-radius: 50%; background: #4ade80; display: inline-block; animation: statusPulse 2s infinite; }
         @keyframes statusPulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
-        .chat-clear-btn {
-            background: rgba(255,255,255,0.15); border: 1.5px solid rgba(255,255,255,0.35);
-            color: white; padding: 8px 18px; border-radius: 20px; cursor: pointer;
-            font-size: 0.85em; font-weight: 600; transition: background 0.2s; font-family: inherit;
-        }
-        .chat-clear-btn:hover { background: rgba(255,255,255,0.28); }
+        .chat-close-btn { background: rgba(255,255,255,0.15); border: none; color: white; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; font-size: 1em; transition: background 0.2s; display:flex;align-items:center;justify-content:center; }
+        .chat-close-btn:hover { background: rgba(255,255,255,0.3); }
         #chatMessages {
-            flex: 1; overflow-y: auto; padding: 10px 2px 10px 0;
-            display: flex; flex-direction: column; gap: 12px;
+            flex: 1; overflow-y: auto; padding: 16px;
+            display: flex; flex-direction: column; gap: 10px;
             scroll-behavior: smooth;
         }
-        .chat-msg { display: flex; gap: 10px; align-items: flex-end; animation: msgSlideIn 0.2s ease; }
+        .chat-msg { display: flex; gap: 8px; align-items: flex-end; animation: msgSlideIn 0.2s ease; }
         @keyframes msgSlideIn { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform:translateY(0); } }
         .chat-msg.user { flex-direction: row-reverse; }
-        .chat-msg-avatar {
-            width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0;
-            display: flex; align-items: center; justify-content: center; font-size: 1em;
-        }
+        .chat-msg-avatar { width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0; display:flex;align-items:center;justify-content:center;font-size:0.9em; }
         .chat-msg.ai .chat-msg-avatar { background: linear-gradient(135deg,#667eea,#764ba2); color: white; }
-        .chat-msg.user .chat-msg-avatar { background: #e5e7eb; }
+        .chat-msg.user .chat-msg-avatar { background: #f0f0f0; }
         body.dark-mode .chat-msg.user .chat-msg-avatar { background: #2a2a3e; }
         .chat-bubble {
-            max-width: 72%; padding: 12px 16px; border-radius: 18px;
-            font-size: 0.95em; line-height: 1.6; word-break: break-word;
+            max-width: 82%; padding: 10px 14px; border-radius: 16px;
+            font-size: 0.9em; line-height: 1.5; word-break: break-word;
         }
-        .chat-msg.ai .chat-bubble { background: #f3f4f6; color: #1f2937; border-bottom-left-radius: 5px; }
+        .chat-msg.ai .chat-bubble {
+            background: #f3f4f6; color: #1f2937; border-bottom-left-radius: 4px;
+        }
         body.dark-mode .chat-msg.ai .chat-bubble { background: #2a2a3e; color: #e0e0e0; }
         .chat-msg.user .chat-bubble {
             background: linear-gradient(135deg, #667eea, #764ba2); color: white;
-            border-bottom-right-radius: 5px;
+            border-bottom-right-radius: 4px;
         }
-        .chat-typing { display: flex; gap: 5px; align-items: center; padding: 14px 16px; }
-        .chat-typing span { width: 8px; height: 8px; border-radius: 50%; background: #9ca3af; animation: typingDot 1.2s infinite; }
+        .chat-typing { display: flex; gap: 4px; align-items: center; padding: 12px 14px; }
+        .chat-typing span { width: 7px; height: 7px; border-radius: 50%; background: #9ca3af; animation: typingDot 1.2s infinite; }
         .chat-typing span:nth-child(2) { animation-delay: 0.2s; }
         .chat-typing span:nth-child(3) { animation-delay: 0.4s; }
-        @keyframes typingDot { 0%,60%,100%{transform:translateY(0);opacity:0.4} 30%{transform:translateY(-6px);opacity:1} }
-        .chat-suggestions { display: flex; flex-wrap: wrap; gap: 8px; padding: 10px 0; flex-shrink: 0; }
+        @keyframes typingDot { 0%,60%,100%{transform:translateY(0);opacity:0.4} 30%{transform:translateY(-5px);opacity:1} }
+        .chat-input-area {
+            padding: 12px 14px; border-top: 1px solid #e5e7eb; display: flex; gap: 8px;
+            flex-shrink: 0; background: white;
+        }
+        body.dark-mode .chat-input-area { background: #1e1e2e; border-color: #333; }
+        #chatInput {
+            flex: 1; padding: 10px 14px; border: 2px solid #e5e7eb; border-radius: 22px;
+            font-size: 0.9em; font-family: inherit; outline: none; resize: none;
+            max-height: 80px; transition: border-color 0.2s; background: white; color: #333;
+        }
+        body.dark-mode #chatInput { background: #2a2a3e; border-color: #444; color: #e0e0e0; }
+        #chatInput:focus { border-color: #667eea; }
+        #chatSendBtn {
+            width: 40px; height: 40px; border-radius: 50%; border: none;
+            background: linear-gradient(135deg,#667eea,#764ba2); color: white;
+            cursor: pointer; font-size: 1.1em; flex-shrink: 0; align-self: flex-end;
+            transition: transform 0.15s, opacity 0.15s; display:flex;align-items:center;justify-content:center;
+        }
+        #chatSendBtn:hover { transform: scale(1.1); }
+        #chatSendBtn:disabled { opacity: 0.5; cursor: default; transform: none; }
+        .chat-suggestions {
+            display: flex; flex-wrap: wrap; gap: 6px; padding: 0 16px 10px;
+            flex-shrink: 0;
+        }
         .chat-suggestion {
-            padding: 7px 15px; border-radius: 20px; border: 1.5px solid #667eea;
-            color: #667eea; background: white; font-size: 0.82em; cursor: pointer;
-            transition: all 0.15s; white-space: nowrap; font-family: inherit; font-weight: 600;
+            padding: 5px 12px; border-radius: 16px; border: 1.5px solid #667eea;
+            color: #667eea; background: white; font-size: 0.78em; cursor: pointer;
+            transition: all 0.15s; white-space: nowrap; font-family: inherit;
         }
         body.dark-mode .chat-suggestion { background: #1e1e2e; }
         .chat-suggestion:hover { background: #667eea; color: white; }
-        .chat-input-area {
-            display: flex; gap: 10px; align-items: flex-end; padding-top: 14px;
-            border-top: 2px solid #e5e7eb; flex-shrink: 0;
+        #chatNotif {
+            position: absolute; top: -4px; right: -4px; width: 18px; height: 18px;
+            background: #ef4444; border-radius: 50%; font-size: 0.65em; color: white;
+            display: flex; align-items: center; justify-content: center; font-weight: 700;
+            pointer-events: none; display: none;
         }
-        body.dark-mode .chat-input-area { border-color: #333; }
-        #chatInput {
-            flex: 1; padding: 12px 18px; border: 2px solid #e5e7eb; border-radius: 25px;
-            font-size: 0.95em; font-family: inherit; outline: none; resize: none;
-            max-height: 110px; transition: border-color 0.2s, box-shadow 0.2s;
-            background: white; color: #333; line-height: 1.5;
-        }
-        body.dark-mode #chatInput { background: #2a2a3e; border-color: #444; color: #e0e0e0; }
-        #chatInput:focus { border-color: #667eea; box-shadow: 0 0 0 3px rgba(102,126,234,0.12); }
-        #chatSendBtn {
-            width: 48px; height: 48px; border-radius: 50%; border: none; flex-shrink: 0;
-            background: linear-gradient(135deg,#667eea,#764ba2); color: white;
-            cursor: pointer; font-size: 1.2em;
-            transition: transform 0.15s, opacity 0.15s, box-shadow 0.15s;
-            display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 4px 14px rgba(102,126,234,0.45);
-        }
-        #chatSendBtn:hover { transform: scale(1.08); box-shadow: 0 6px 20px rgba(102,126,234,0.6); }
-        #chatSendBtn:disabled { opacity: 0.45; cursor: default; transform: none; box-shadow: none; }
         /* TOAST NOTIFICATIONS */
         #toastContainer { position: fixed; bottom: 20px; right: 20px; z-index: 9998; display: flex; flex-direction: column; gap: 10px; }
         .toast {
@@ -1362,6 +1386,33 @@
         .toast.achievement { border-left: 4px solid #fbbf24; }
         @keyframes toastIn { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
         @keyframes toastOut { from { opacity: 1; } to { opacity: 0; transform: translateX(120%); } }
+
+        /* ===== AI CHAT TAB ===== */
+        #fullChatMessages .fchat-msg { display:flex; gap:10px; align-items:flex-end; animation: msgSlideIn 0.2s ease; }
+        #fullChatMessages .fchat-msg.user { flex-direction:row-reverse; }
+        #fullChatMessages .fchat-avatar { width:32px;height:32px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1em; }
+        #fullChatMessages .fchat-msg.ai .fchat-avatar { background:linear-gradient(135deg,#667eea,#764ba2);color:white; }
+        #fullChatMessages .fchat-msg.user .fchat-avatar { background:#f0f0f0; }
+        #fullChatMessages .fchat-bubble { max-width:80%;padding:11px 16px;border-radius:18px;font-size:0.93em;line-height:1.55;word-break:break-word; }
+        #fullChatMessages .fchat-msg.ai .fchat-bubble { background:#f3f4f6;color:#1f2937;border-bottom-left-radius:4px; }
+        #fullChatMessages .fchat-msg.user .fchat-bubble { background:linear-gradient(135deg,#667eea,#764ba2);color:white;border-bottom-right-radius:4px; }
+        .fchat-typing span { display:inline-block;width:7px;height:7px;border-radius:50%;background:#aaa;margin:0 2px;animation:typingBounce 1.2s infinite; }
+        .fchat-typing span:nth-child(2){animation-delay:0.2s;} .fchat-typing span:nth-child(3){animation-delay:0.4s;}
+        @keyframes typingBounce{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-8px)}}
+
+        /* ===== STORIES TAB ===== */
+        .story-card {
+            background:white;border-radius:16px;border:2px solid #e5e7eb;overflow:hidden;
+            display:flex;flex-direction:column;transition:all 0.25s;cursor:pointer;
+        }
+        .story-card:hover { border-color:#667eea;box-shadow:0 8px 24px rgba(102,126,234,0.18);transform:translateY(-3px); }
+        .story-card-banner { height:90px;display:flex;align-items:center;justify-content:center;font-size:3em; }
+        .story-card-body { padding:18px;flex:1;display:flex;flex-direction:column;gap:8px; }
+        .story-badge { display:inline-block;padding:3px 10px;border-radius:12px;font-size:0.78em;font-weight:700;color:white; }
+        .story-status-draft { background:#f59e0b; }
+        .story-status-complete { background:#10b981; }
+        .story-status-ongoing { background:#667eea; }
+        .story-card-actions { padding:12px 18px;border-top:1px solid #f0f0f0;display:flex;gap:8px;justify-content:flex-end; }
     </style>
 </head>
 <body>
@@ -1380,7 +1431,9 @@
             <button class="tab" onclick="switchTab('cards')" style="white-space:nowrap;min-width:90px;">🃏 Cards</button>
             <button class="tab" onclick="switchTab('stats')" style="white-space:nowrap;min-width:90px;">📊 Stats</button>
             <button class="tab" onclick="switchTab('achievements')" style="white-space:nowrap;min-width:90px;">🏆 Badges</button>
-            <button class="tab" onclick="switchTab('chat')" style="white-space:nowrap;min-width:90px;">🤖 AI Chat</button>
+            <button class="tab" onclick="switchTab('aichat')" style="white-space:nowrap;min-width:90px;">🤖 AI Chat</button>
+            <button class="tab" onclick="switchTab('stories')" style="white-space:nowrap;min-width:90px;">📖 Stories</button>
+            <button class="tab" onclick="switchTab('gaming')" style="white-space:nowrap;min-width:90px;">🎮 Gaming</button>
         </div>
 
         <!-- SAVINGS TAB -->
@@ -1702,52 +1755,159 @@
             <div class="achievements-grid" id="achievementsGrid"><!-- rendered by JS --></div>
         </div>
 
-        <!-- CLAUDE AI TAB -->
-        <div id="chat-tab" class="tab-content">
-            <div class="chat-tab-wrap">
-                <!-- Header -->
-                <div class="chat-tab-header">
-                    <div class="chat-tab-avatar">🤖</div>
-                    <div class="chat-tab-info">
-                        <div class="chat-tab-name">AI Chatbot</div>
-                        <div class="chat-tab-status">
-                            <span class="chat-status-dot"></span>
-                            Online &nbsp;·&nbsp; Ready to help
+        <!-- ══════════════════════════════════════
+             AI CHAT TAB
+        ══════════════════════════════════════ -->
+        <div id="aichat-tab" class="tab-content">
+            <div class="section-header">
+                <h2>🤖 AI Chat</h2>
+            </div>
+
+            <!-- MAIN CHAT UI -->
+            <div style="background:#f9f9fc;border-radius:20px;overflow:hidden;border:2px solid #e5e7eb;display:flex;flex-direction:column;height:650px;">
+                <!-- header -->
+                <div style="background:linear-gradient(135deg,#10a37f,#0d8c6d);padding:18px 22px;display:flex;align-items:center;gap:14px;color:white;flex-shrink:0;">
+                    <div style="width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:1.4em;">🤖</div>
+                    <div style="flex:1;">
+                        <div style="font-weight:700;font-size:1.05em;">ChatGPT — GPT-4o</div>
+                        <div style="font-size:0.8em;opacity:0.85;display:flex;align-items:center;gap:6px;">
+                            <span style="width:8px;height:8px;border-radius:50%;background:#4ade80;display:inline-block;"></span>
+                            <span>Powered by your Cloudflare Worker</span>
                         </div>
                     </div>
-                    <button class="chat-clear-btn" onclick="clearChat()">🗑️ Clear chat</button>
+                    <button onclick="clearFullChat()" style="background:rgba(255,255,255,0.15);border:none;color:white;padding:7px 14px;border-radius:8px;cursor:pointer;font-size:0.85em;font-weight:600;">🗑️ Clear</button>
+                    <button onclick="toggleAiSystem()" style="background:rgba(255,255,255,0.15);border:none;color:white;padding:7px 14px;border-radius:8px;cursor:pointer;font-size:0.85em;font-weight:600;">⚙️ System</button>
                 </div>
 
-                <!-- Messages -->
-                <div id="chatMessages">
-                    <div class="chat-empty-state" id="chatEmptyState">
-                        <div class="empty-icon">🤖</div>
-                        <p>Hey Aadidev! Your AI chatbot is ready.<br>Ask me anything: revision help, money tips, exam strategies, or just a chat!</p>
+                <!-- system prompt editor -->
+                <div id="aiSystemPanel" style="display:none;background:#1e1e2e;padding:14px 18px;flex-shrink:0;">
+                    <div style="color:#a0a0c0;font-size:0.8em;font-weight:600;margin-bottom:6px;">SYSTEM PROMPT — define ChatGPT's personality</div>
+                    <textarea id="aiSystemPrompt" style="width:100%;background:#13131f;color:#e0e0f0;border:1px solid #444;border-radius:8px;padding:10px;font-size:0.88em;font-family:monospace;resize:vertical;min-height:70px;outline:none;">You are a smart and friendly AI assistant helping Aadidev, a Year 7 student at Wallington County Grammar School. Be concise, warm, use British English, and occasionally throw in a relevant emoji. You're knowledgeable about science, maths, history, cricket, coding and everything in between.</textarea>
+                    <button onclick="toggleAiSystem()" style="margin-top:8px;background:#10a37f;color:white;border:none;padding:7px 14px;border-radius:7px;cursor:pointer;font-size:0.85em;font-weight:600;">✓ Done</button>
+                </div>
+
+                <!-- messages -->
+                <div id="fullChatMessages" style="flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:12px;scroll-behavior:smooth;">
+                    <div id="fullChatEmpty" style="text-align:center;color:#999;font-size:0.9em;padding:40px 20px;">
+                        <div style="font-size:3em;margin-bottom:12px;">🤖</div>
+                        <div style="font-weight:600;color:#555;margin-bottom:6px;">ChatGPT is ready!</div>
+                        <div>Ask anything — revision, cricket, coding, life advice...</div>
                     </div>
                 </div>
 
-                <!-- Suggestion chips -->
-                <div class="chat-suggestions" id="chatSuggestions">
-                    <button class="chat-suggestion" onclick="sendSuggestion(this)">💰 How can I save faster?</button>
-                    <button class="chat-suggestion" onclick="sendSuggestion(this)">📚 Give me revision tips</button>
-                    <button class="chat-suggestion" onclick="sendSuggestion(this)">🍅 How does Pomodoro work?</button>
-                    <button class="chat-suggestion" onclick="sendSuggestion(this)">🎯 Help me set a goal</button>
-                    <button class="chat-suggestion" onclick="sendSuggestion(this)">😤 I'm feeling stressed</button>
-                    <button class="chat-suggestion" onclick="sendSuggestion(this)">🧮 Explain quadratic equations</button>
-                </div>
-
-                <!-- Input -->
-                <div class="chat-input-area">
-                    <textarea id="chatInput" placeholder="Ask me anything… (Enter to send, Shift+Enter for new line)" rows="1"
-                        onkeydown="handleChatKey(event)" oninput="autoResizeChat(this)"></textarea>
-                    <button id="chatSendBtn" onclick="sendChatMessage()" title="Send message">➤</button>
-                </div>
-
-                <!-- Powered by -->
-                <div style="text-align:center; padding: 8px 0 2px; font-size:0.78em; color:#aaa; letter-spacing:0.02em;">
-                    Powered by <strong style="color:#667eea;">Claude</strong> · Anthropic
+                <!-- input -->
+                <div style="border-top:2px solid #e5e7eb;padding:14px 16px;background:white;flex-shrink:0;display:flex;gap:10px;align-items:flex-end;">
+                    <textarea id="fullChatInput" placeholder="Type a message... (Enter to send, Shift+Enter for new line)" rows="1"
+                        style="flex:1;padding:12px 16px;border:2px solid #ddd;border-radius:14px;font-size:0.95em;font-family:inherit;resize:none;outline:none;max-height:120px;overflow-y:auto;transition:border 0.2s;"
+                        oninput="autoResizeFullChat(this)"
+                        onkeydown="handleFullChatKey(event)"
+                        onfocus="this.style.borderColor='#10a37f'"
+                        onblur="this.style.borderColor='#ddd'"></textarea>
+                    <button id="fullChatSendBtn" onclick="sendFullChat()" style="background:linear-gradient(135deg,#10a37f,#0d8c6d);color:white;border:none;padding:12px 20px;border-radius:14px;cursor:pointer;font-size:1em;font-weight:700;white-space:nowrap;align-self:flex-end;">Send ↑</button>
                 </div>
             </div>
+        </div>
+
+        <!-- ══════════════════════════════════════
+             STORIES / STORYBOARD TAB
+        ══════════════════════════════════════ -->
+        <div id="stories-tab" class="tab-content">
+            <div class="section-header">
+                <h2>📖 My Stories</h2>
+                <button class="btn btn-primary" onclick="openStoryEditor()">✍️ Write Story</button>
+            </div>
+
+            <!-- genre filter -->
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;" id="genreFilters">
+                <button class="btn" onclick="filterStories('all')" id="genreAll" style="background:#667eea;color:white;border-radius:20px;padding:7px 16px;font-size:0.88em;font-weight:700;">All</button>
+                <button class="btn btn-secondary" onclick="filterStories('Horror')" id="genreHorror" style="border-radius:20px;padding:7px 16px;font-size:0.88em;font-weight:700;">🩸 Horror</button>
+                <button class="btn btn-secondary" onclick="filterStories('Adventure')" id="genreAdventure" style="border-radius:20px;padding:7px 16px;font-size:0.88em;font-weight:700;">⚔️ Adventure</button>
+                <button class="btn btn-secondary" onclick="filterStories('Sci-Fi')" id="genreSciFi" style="border-radius:20px;padding:7px 16px;font-size:0.88em;font-weight:700;">🚀 Sci-Fi</button>
+                <button class="btn btn-secondary" onclick="filterStories('Mystery')" id="genreMystery" style="border-radius:20px;padding:7px 16px;font-size:0.88em;font-weight:700;">🔍 Mystery</button>
+                <button class="btn btn-secondary" onclick="filterStories('Fantasy')" id="genreFantasy" style="border-radius:20px;padding:7px 16px;font-size:0.88em;font-weight:700;">🧙 Fantasy</button>
+                <button class="btn btn-secondary" onclick="filterStories('Other')" id="genreOther" style="border-radius:20px;padding:7px 16px;font-size:0.88em;font-weight:700;">📝 Other</button>
+            </div>
+
+            <!-- stories grid -->
+            <div id="storiesGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px;">
+                <div id="storiesEmpty" style="grid-column:1/-1;text-align:center;padding:60px 20px;color:#999;">
+                    <div style="font-size:3em;margin-bottom:12px;">📖</div>
+                    <div style="font-size:1.2em;font-weight:700;color:#555;margin-bottom:8px;">No stories yet!</div>
+                    <div>Hit "Write Story" to publish your first one.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══════════════════════════════════════
+             GAMING TAB
+        ══════════════════════════════════════ -->
+        <div id="gaming-tab" class="tab-content">
+            <div class="section-header">
+                <h2>🎮 Gaming</h2>
+            </div>
+
+            <!-- coming soon placeholder + game embed area -->
+            <div style="background:linear-gradient(135deg,#1e1b4b,#312e81);border-radius:20px;padding:30px;color:white;margin-bottom:24px;text-align:center;">
+                <div style="font-size:3em;margin-bottom:12px;">🕹️</div>
+                <h3 style="font-size:1.5em;margin-bottom:8px;">Games Arcade</h3>
+                <p style="opacity:0.8;font-size:0.95em;">Send me your games and I'll drop them right in here!</p>
+            </div>
+
+            <div id="gamesGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;">
+                <!-- Game cards will be added here -->
+                <div id="gamesEmpty" style="grid-column:1/-1;text-align:center;padding:40px;color:#999;">
+                    <div style="font-size:2.5em;margin-bottom:10px;">🎮</div>
+                    <div style="font-weight:600;color:#555;margin-bottom:6px;">No games yet — send them over!</div>
+                    <div style="font-size:0.9em;">I'll build a card for each game and embed them right here.</div>
+                </div>
+            </div>
+        </div>
+
+    </div><!-- end .container -->
+
+    <!-- STORY EDITOR POPUP -->
+    <div class="popup-overlay" id="storyEditorPopup" style="z-index:2000;">
+        <div class="popup" style="max-width:700px;width:95%;transform:none;background:white;max-height:92vh;display:flex;flex-direction:column;">
+            <button class="close-popup" onclick="closeStoryEditor()">×</button>
+            <h3 id="storyEditorTitle">✍️ Write a Story</h3>
+            <input type="hidden" id="storyEditId">
+            <div class="form-group">
+                <label>Title</label>
+                <input type="text" id="storyTitleInput" placeholder="Give your story a title..." style="font-size:1.1em;font-weight:600;">
+            </div>
+            <div style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap;">
+                <div class="form-group" style="flex:1;min-width:140px;margin:0;">
+                    <label>Genre</label>
+                    <select id="storyGenreInput">
+                        <option>Horror</option><option>Adventure</option><option>Sci-Fi</option>
+                        <option>Mystery</option><option>Fantasy</option><option>Other</option>
+                    </select>
+                </div>
+                <div class="form-group" style="flex:1;min-width:140px;margin:0;">
+                    <label>Status</label>
+                    <select id="storyStatusInput">
+                        <option value="draft">📝 Draft</option>
+                        <option value="complete">✅ Complete</option>
+                        <option value="ongoing">🔄 Ongoing</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group" style="flex:1;display:flex;flex-direction:column;">
+                <label>Story</label>
+                <textarea id="storyBodyInput" placeholder="Start writing your story here..." style="flex:1;min-height:260px;line-height:1.7;font-size:1em;resize:vertical;"></textarea>
+            </div>
+            <div class="popup-actions">
+                <button type="button" class="btn btn-secondary" onclick="closeStoryEditor()">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="saveStory()">📖 Publish</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- STORY READ POPUP -->
+    <div class="popup-overlay" id="storyReadPopup" style="z-index:2000;">
+        <div class="popup" style="max-width:700px;width:95%;transform:none;background:white;max-height:92vh;overflow-y:auto;">
+            <button class="close-popup" onclick="closeStoryRead()">×</button>
+            <div id="storyReadContent"></div>
         </div>
     </div>
 
@@ -2095,8 +2255,6 @@
                 drawWheel();
             } else if (tabName === 'cards') {
                 renderFlashcards();
-            } else if (tabName === 'chat') {
-                initChatTab();
             }
         }
 
@@ -4182,44 +4340,31 @@
         }, { once: false });
 
         // ============================================================
-        // AI CHATBOT TAB — Powered by Claude
+        // AI CHATBOT — Powered by Claude
         // ============================================================
+        let chatOpen = false;
         let chatHistory = [];
         let chatWaiting = false;
         let chatGreeted = false;
 
-        function initChatTab() {
-            if (!chatGreeted) {
-                chatGreeted = true;
-                // Remove empty state, show greeting
-                const empty = document.getElementById('chatEmptyState');
-                if (empty) empty.remove();
-                appendChatMsg('ai', "Hey Aadidev! 👋 Your AI chatbot is here and ready to help. Ask me anything: revision tips, maths problems, savings advice, motivation — or just have a chat. What's on your mind?");
+        function toggleChat() {
+            chatOpen = !chatOpen;
+            const win = document.getElementById('chatWindow');
+            const notif = document.getElementById('chatNotif');
+            win.classList.toggle('open', chatOpen);
+            if (chatOpen) {
+                notif.style.display = 'none';
+                if (!chatGreeted) {
+                    chatGreeted = true;
+                    appendChatMsg('ai', "Hey Aadidev! 👋 I'm Claude, your AI study and savings buddy. I can help you with revision tips, budgeting advice, motivation, explain anything from your subjects, or just have a chat. What's on your mind?");
+                }
+                setTimeout(() => document.getElementById('chatInput')?.focus(), 300);
             }
-            setTimeout(() => document.getElementById('chatInput')?.focus(), 200);
-        }
-
-        function clearChat() {
-            if (!confirm('Clear the chat history?')) return;
-            chatHistory = [];
-            chatGreeted = false;
-            const messages = document.getElementById('chatMessages');
-            if (messages) {
-                messages.innerHTML = `<div class="chat-empty-state" id="chatEmptyState">
-                    <div class="empty-icon">🤖</div>
-                    <p>Hey Aadidev! Your AI chatbot is ready.<br>Ask me anything: revision help, money tips, exam strategies, or just a chat!</p>
-                </div>`;
-            }
-            const suggestions = document.getElementById('chatSuggestions');
-            if (suggestions) suggestions.style.display = 'flex';
-            showToast('🗑️ Chat cleared', 'info');
         }
 
         function appendChatMsg(role, text) {
             const messages = document.getElementById('chatMessages');
             if (!messages) return;
-            // Remove empty state on first real message
-            document.getElementById('chatEmptyState')?.remove();
             const avatar = role === 'ai' ? '🤖' : '🧑';
             const div = document.createElement('div');
             div.className = `chat-msg ${role}`;
@@ -4232,17 +4377,17 @@
         }
 
         function formatChatText(text) {
+            // Convert **bold** and line breaks
             return text
                 .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
                 .replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
                 .replace(/\*(.*?)\*/g,'<em>$1</em>')
-                .replace(/`([^`]+)`/g,'<code style="background:#f0f0f0;padding:1px 5px;border-radius:4px;font-family:monospace;">$1</code>')
                 .replace(/\n/g,'<br>');
         }
 
         function showTypingIndicator() {
             const messages = document.getElementById('chatMessages');
-            if (!messages) return;
+            if (!messages) return null;
             const div = document.createElement('div');
             div.className = 'chat-msg ai';
             div.id = 'chatTyping';
@@ -4252,6 +4397,7 @@
             `;
             messages.appendChild(div);
             messages.scrollTop = messages.scrollHeight;
+            return div;
         }
 
         function removeTypingIndicator() {
@@ -4259,6 +4405,7 @@
         }
 
         function buildSystemPrompt() {
+            // Pull live context from the app so Claude knows what's going on
             const goals = JSON.parse(localStorage.getItem('savingsGoals') || '{}');
             const subjects = JSON.parse(localStorage.getItem('studySubjects') || '{}');
             const totalSaved = Object.values(goals).reduce((s, g) => s + (g.saved||0), 0);
@@ -4268,23 +4415,20 @@
             const challengesDone = localStorage.getItem('challengesDone') || '0';
             const journalCount = JSON.parse(localStorage.getItem('journalEntries') || '[]').length;
             const level = Math.floor(totalSaved / 5000) + 1;
-            const allScores = Object.values(subjects).flatMap(s => s.entries.map(e => e.score));
-            const avgScore = allScores.length ? Math.round(allScores.reduce((a,b)=>a+b,0)/allScores.length) : null;
 
-            return `You are Claude, a friendly and encouraging AI assistant built directly into Aadidev's personal Savings & Study Hub website. You are his personal tutor, financial coach, and motivational buddy all rolled into one.
+            return `You are Claude, a friendly and encouraging AI assistant built into Aadidev's personal Savings & Study Hub website. You act as his personal tutor, financial coach, and motivational buddy all in one.
 
-Aadidev's live stats right now:
+Aadidev's current stats:
 - Savings goals: ${goalSummary}
-- Total saved: £${totalSaved.toLocaleString()} (Level ${level})
-- Subjects he studies: ${studySummary}
-- Average study score: ${avgScore !== null ? avgScore + '%' : 'no scores yet'}
-- Pomodoro focus sessions completed: ${pomTotal}
+- Total saved: £${totalSaved} (Level ${level})
+- Studying: ${studySummary}
+- Pomodoro sessions completed: ${pomTotal}
 - Daily challenges completed: ${challengesDone}
 - Journal entries written: ${journalCount}
 
-Your personality: warm, encouraging, and slightly informal — like a knowledgeable older friend or cool tutor, not a stiff corporate bot. Use British English. Keep responses punchy and well-structured — use line breaks and occasional bold for readability, but don't write essays. Use the occasional emoji where it fits naturally. Reference his actual data above to give personalised, specific advice when relevant.
+Your personality: warm, encouraging, slightly informal (like a cool older tutor), smart, and genuinely helpful. Use British English. Keep responses concise and punchy — avoid massive walls of text. Use the occasional emoji to keep things lively. You can reference Aadidev's actual data above to give personalised advice.
 
-You can help with absolutely anything he needs: revision strategies, past paper walkthroughs, maths/science/English/history/geography questions, budgeting and saving advice, goal-setting, Pomodoro and study techniques, mental wellbeing, motivation, time management, or just a friendly chat. Be real, be useful, be his mate.`;
+You can help with: revision strategies, exam tips, maths/science/English/history/geography questions, budgeting and saving advice, motivation, goal-setting, time management, mental wellbeing, explaining concepts from any subject, and anything else Aadidev needs. Be a real friend, not a generic bot.`;
         }
 
         async function sendChatMessage() {
@@ -4296,10 +4440,6 @@ You can help with absolutely anything he needs: revision strategies, past paper 
             input.value = '';
             input.style.height = '';
             document.getElementById('chatSuggestions').style.display = 'none';
-
-            // Show greeting first if not done yet
-            if (!chatGreeted) { chatGreeted = true; document.getElementById('chatEmptyState')?.remove(); }
-
             appendChatMsg('user', text);
             chatHistory.push({ role: 'user', content: text });
 
@@ -4313,9 +4453,9 @@ You can help with absolutely anything he needs: revision strategies, past paper 
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         model: 'claude-sonnet-4-20250514',
-                        max_tokens: 1024,
+                        max_tokens: 1000,
                         system: buildSystemPrompt(),
-                        messages: chatHistory.slice(-24)
+                        messages: chatHistory.slice(-20) // last 20 messages for context
                     })
                 });
 
@@ -4327,9 +4467,9 @@ You can help with absolutely anything he needs: revision strategies, past paper 
                     chatHistory.push({ role: 'assistant', content: reply });
                     appendChatMsg('ai', reply);
                 } else if (data.error) {
-                    appendChatMsg('ai', `⚠️ Something went wrong: ${data.error.message || 'Unknown error'}. Give it another go!`);
+                    appendChatMsg('ai', `⚠️ Hmm, something went wrong: ${data.error.message || 'Unknown error'}. Try again!`);
                 } else {
-                    appendChatMsg('ai', "⚠️ Didn't get a response — try again in a moment!");
+                    appendChatMsg('ai', "⚠️ I didn't get a response there — try again in a moment!");
                 }
             } catch (err) {
                 removeTypingIndicator();
@@ -4342,6 +4482,7 @@ You can help with absolutely anything he needs: revision strategies, past paper 
         }
 
         function sendSuggestion(btn) {
+            const text = btn.textContent.replace(/^[^\s]+\s/, '').trim(); // strip emoji
             document.getElementById('chatInput').value = btn.textContent.trim();
             sendChatMessage();
         }
@@ -4355,8 +4496,264 @@ You can help with absolutely anything he needs: revision strategies, past paper 
 
         function autoResizeChat(el) {
             el.style.height = '';
-            el.style.height = Math.min(el.scrollHeight, 110) + 'px';
+            el.style.height = Math.min(el.scrollHeight, 80) + 'px';
         }
+
+        // Show notification dot after 3 seconds if chat hasn't been opened
+        setTimeout(() => {
+            if (!chatOpen && !chatGreeted) {
+                const notif = document.getElementById('chatNotif');
+                if (notif) { notif.style.display = 'flex'; }
+            }
+        }, 3000);
+
+        // ============================================================
+        // FULL-PAGE AI CHAT TAB — via Cloudflare Worker
+        // ============================================================
+        const WORKER_URL = 'https://aadidev-ai-proxy.aadidev-devnationofficial.workers.dev';
+        let fullChatHistory = [];
+        let fullChatWaiting = false;
+
+        function toggleAiSystem() {
+            const p = document.getElementById('aiSystemPanel');
+            p.style.display = p.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function clearFullChat() {
+            fullChatHistory = [];
+            const msgs = document.getElementById('fullChatMessages');
+            msgs.innerHTML = `<div id="fullChatEmpty" style="text-align:center;color:#999;font-size:0.9em;padding:40px 20px;">
+                <div style="font-size:3em;margin-bottom:12px;">🤖</div>
+                <div style="font-weight:600;color:#555;margin-bottom:6px;">Chat cleared!</div>
+                <div>Start a fresh conversation below.</div></div>`;
+        }
+
+        function appendFullChatMsg(role, text) {
+            const msgs = document.getElementById('fullChatMessages');
+            document.getElementById('fullChatEmpty')?.remove();
+            const avatar = role === 'ai' ? '🤖' : '🧑';
+            const div = document.createElement('div');
+            div.className = `fchat-msg ${role}`;
+            div.innerHTML = `
+                <div class="fchat-avatar">${avatar}</div>
+                <div class="fchat-bubble">${formatChatText(text)}</div>`;
+            msgs.appendChild(div);
+            msgs.scrollTop = msgs.scrollHeight;
+        }
+
+        function showFullChatTyping() {
+            const msgs = document.getElementById('fullChatMessages');
+            const div = document.createElement('div');
+            div.className = 'fchat-msg ai';
+            div.id = 'fullChatTyping';
+            div.innerHTML = `<div class="fchat-avatar">🤖</div><div class="fchat-bubble fchat-typing"><span></span><span></span><span></span></div>`;
+            msgs.appendChild(div);
+            msgs.scrollTop = msgs.scrollHeight;
+        }
+
+        async function sendFullChat() {
+            if (fullChatWaiting) return;
+            const input = document.getElementById('fullChatInput');
+            const text = input.value.trim();
+            if (!text) return;
+
+            input.value = '';
+            input.style.height = '';
+            appendFullChatMsg('user', text);
+            fullChatHistory.push({ role: 'user', content: text });
+
+            fullChatWaiting = true;
+            document.getElementById('fullChatSendBtn').disabled = true;
+            showFullChatTyping();
+
+            const systemPrompt = document.getElementById('aiSystemPrompt')?.value?.trim() ||
+                'You are a smart friendly AI assistant. Be concise and use British English.';
+
+            try {
+                const res = await fetch(WORKER_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        model: 'gpt-4o',
+                        max_tokens: 1024,
+                        messages: [
+                            { role: 'system', content: systemPrompt },
+                            ...fullChatHistory.slice(-30)
+                        ]
+                    })
+                });
+                document.getElementById('fullChatTyping')?.remove();
+                const data = await res.json();
+                if (data.choices?.[0]?.message?.content) {
+                    const reply = data.choices[0].message.content;
+                    fullChatHistory.push({ role: 'assistant', content: reply });
+                    appendFullChatMsg('ai', reply);
+                } else if (data.error) {
+                    appendFullChatMsg('ai', `⚠️ Error: ${data.error.message}`);
+                } else {
+                    appendFullChatMsg('ai', '⚠️ No response received. Try again!');
+                }
+            } catch(e) {
+                document.getElementById('fullChatTyping')?.remove();
+                appendFullChatMsg('ai', '⚠️ Could not reach the Worker. Make sure it\'s deployed on Cloudflare!');
+            }
+
+            fullChatWaiting = false;
+            document.getElementById('fullChatSendBtn').disabled = false;
+            document.getElementById('fullChatInput').focus();
+        }
+
+        function handleFullChatKey(e) {
+            if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendFullChat(); }
+        }
+
+        function autoResizeFullChat(el) {
+            el.style.height = '';
+            el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+        }
+
+        // ============================================================
+        // STORIES / STORYBOARD
+        // ============================================================
+        const GENRE_COLORS = {
+            'Horror': ['#1f0a0a','#dc2626'], 'Adventure': ['#0f2027','#f59e0b'],
+            'Sci-Fi': ['#0f0f2e','#6366f1'], 'Mystery': ['#0d1117','#a855f7'],
+            'Fantasy': ['#0a1628','#3b82f6'], 'Other': ['#1a1a1a','#6b7280']
+        };
+        const GENRE_EMOJI = { 'Horror':'🩸','Adventure':'⚔️','Sci-Fi':'🚀','Mystery':'🔍','Fantasy':'🧙','Other':'📝' };
+
+        let activeStoryGenre = 'all';
+
+        function getStories() { return JSON.parse(localStorage.getItem('hubStories') || '[]'); }
+        function saveStories(arr) { localStorage.setItem('hubStories', JSON.stringify(arr)); }
+
+        function openStoryEditor(id = null) {
+            document.getElementById('storyEditorPopup').classList.add('active');
+            document.getElementById('storyEditId').value = id || '';
+            if (id) {
+                const s = getStories().find(x => x.id == id);
+                if (s) {
+                    document.getElementById('storyEditorTitle').textContent = '✏️ Edit Story';
+                    document.getElementById('storyTitleInput').value = s.title;
+                    document.getElementById('storyGenreInput').value = s.genre;
+                    document.getElementById('storyStatusInput').value = s.status;
+                    document.getElementById('storyBodyInput').value = s.body;
+                }
+            } else {
+                document.getElementById('storyEditorTitle').textContent = '✍️ Write a Story';
+                document.getElementById('storyTitleInput').value = '';
+                document.getElementById('storyBodyInput').value = '';
+                document.getElementById('storyGenreInput').value = 'Horror';
+                document.getElementById('storyStatusInput').value = 'draft';
+            }
+        }
+
+        function closeStoryEditor() { document.getElementById('storyEditorPopup').classList.remove('active'); }
+
+        function saveStory() {
+            const title = document.getElementById('storyTitleInput').value.trim();
+            const body = document.getElementById('storyBodyInput').value.trim();
+            if (!title || !body) { showToast('⚠️ Add a title and some story text!', 'info'); return; }
+            const id = document.getElementById('storyEditId').value;
+            let stories = getStories();
+            const entry = {
+                id: id || Date.now(),
+                title,
+                genre: document.getElementById('storyGenreInput').value,
+                status: document.getElementById('storyStatusInput').value,
+                body,
+                wordCount: body.trim().split(/\s+/).length,
+                date: new Date().toLocaleDateString('en-GB')
+            };
+            if (id) { stories = stories.map(s => s.id == id ? entry : s); }
+            else { stories.unshift(entry); }
+            saveStories(stories);
+            closeStoryEditor();
+            renderStories();
+            showToast('📖 Story published!', 'success');
+        }
+
+        function deleteStory(id) {
+            if (!confirm('Delete this story?')) return;
+            saveStories(getStories().filter(s => s.id != id));
+            renderStories();
+            showToast('🗑️ Story deleted.', 'info');
+        }
+
+        function openStoryRead(id) {
+            const s = getStories().find(x => x.id == id);
+            if (!s) return;
+            const [bg1, accent] = GENRE_COLORS[s.genre] || ['#1a1a1a','#667eea'];
+            document.getElementById('storyReadContent').innerHTML = `
+                <div style="background:linear-gradient(135deg,${bg1},${accent}33);border-radius:12px;padding:20px;margin-bottom:20px;">
+                    <div style="font-size:2.5em;margin-bottom:8px;">${GENRE_EMOJI[s.genre]||'📖'}</div>
+                    <h2 style="font-size:1.6em;color:#1f2937;margin-bottom:6px;">${s.title}</h2>
+                    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                        <span class="story-badge" style="background:${accent};">${s.genre}</span>
+                        <span class="story-badge story-status-${s.status}">${s.status === 'draft'?'📝 Draft':s.status==='complete'?'✅ Complete':'🔄 Ongoing'}</span>
+                        <span style="font-size:0.82em;color:#666;">${s.wordCount} words · ${s.date}</span>
+                    </div>
+                </div>
+                <div style="line-height:1.85;font-size:1.02em;color:#1f2937;white-space:pre-wrap;">${escapeHtml(s.body)}</div>`;
+            document.getElementById('storyReadPopup').classList.add('active');
+        }
+
+        function closeStoryRead() { document.getElementById('storyReadPopup').classList.remove('active'); }
+
+        function escapeHtml(t) { return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+        function filterStories(genre) {
+            activeStoryGenre = genre;
+            document.querySelectorAll('#genreFilters .btn').forEach(b => {
+                b.style.background = '#f0f0f0'; b.style.color = '#333';
+            });
+            const activeBtn = document.getElementById('genre' + (genre === 'all' ? 'All' : genre.replace('-','')));
+            if (activeBtn) { activeBtn.style.background = '#667eea'; activeBtn.style.color = 'white'; }
+            renderStories();
+        }
+
+        function renderStories() {
+            const grid = document.getElementById('storiesGrid');
+            let stories = getStories();
+            if (activeStoryGenre !== 'all') stories = stories.filter(s => s.genre === activeStoryGenre);
+
+            // keep empty state div
+            grid.innerHTML = '';
+            if (stories.length === 0) {
+                grid.innerHTML = `<div id="storiesEmpty" style="grid-column:1/-1;text-align:center;padding:60px 20px;color:#999;">
+                    <div style="font-size:3em;margin-bottom:12px;">📖</div>
+                    <div style="font-size:1.2em;font-weight:700;color:#555;margin-bottom:8px;">No stories here!</div>
+                    <div>${activeStoryGenre === 'all' ? 'Hit "Write Story" to publish your first one.' : 'No '+activeStoryGenre+' stories yet.'}</div></div>`;
+                return;
+            }
+            stories.forEach(s => {
+                const [bg1, accent] = GENRE_COLORS[s.genre] || ['#333','#667eea'];
+                const preview = s.body.length > 120 ? s.body.slice(0,120) + '…' : s.body;
+                const card = document.createElement('div');
+                card.className = 'story-card';
+                card.innerHTML = `
+                    <div class="story-card-banner" style="background:linear-gradient(135deg,${bg1},${accent});">
+                        ${GENRE_EMOJI[s.genre]||'📖'}
+                    </div>
+                    <div class="story-card-body">
+                        <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
+                            <span class="story-badge" style="background:${accent};">${s.genre}</span>
+                            <span class="story-badge story-status-${s.status}">${s.status==='draft'?'📝 Draft':s.status==='complete'?'✅ Complete':'🔄 Ongoing'}</span>
+                        </div>
+                        <div style="font-size:1.15em;font-weight:700;color:#1f2937;margin-top:4px;">${escapeHtml(s.title)}</div>
+                        <div style="font-size:0.86em;color:#6b7280;line-height:1.5;">${escapeHtml(preview)}</div>
+                        <div style="font-size:0.78em;color:#9ca3af;margin-top:auto;padding-top:6px;">${s.wordCount} words · ${s.date}</div>
+                    </div>
+                    <div class="story-card-actions">
+                        <button class="btn btn-secondary" style="font-size:0.82em;padding:6px 12px;" onclick="event.stopPropagation();openStoryEditor(${s.id})">✏️ Edit</button>
+                        <button class="btn" style="font-size:0.82em;padding:6px 12px;background:#fee2e2;color:#dc2626;" onclick="event.stopPropagation();deleteStory(${s.id})">🗑️</button>
+                        <button class="btn btn-primary" style="font-size:0.82em;padding:6px 12px;" onclick="event.stopPropagation();openStoryRead(${s.id})">📖 Read</button>
+                    </div>`;
+                grid.appendChild(card);
+            });
+        }
+
+        window.addEventListener('DOMContentLoaded', renderStories);
 
     </script>
 </body>
