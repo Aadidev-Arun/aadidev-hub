@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aadidev's Savings & Study Hub</title>
-    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -1414,78 +1413,10 @@
         .story-status-complete { background:#10b981; }
         .story-status-ongoing { background:#667eea; }
         .story-card-actions { padding:12px 18px;border-top:1px solid #f0f0f0;display:flex;gap:8px;justify-content:flex-end; }
-
-        /* ===== SPLASH SCREEN ===== */
-        #splash {
-            position: fixed; inset: 0; z-index: 99999;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
-            gap: 24px;
-            transition: opacity 0.7s ease, visibility 0.7s ease;
-        }
-        #splash.hide { opacity: 0; visibility: hidden; pointer-events: none; }
-
-        .splash-logo {
-            font-family: 'Pacifico', cursive;
-            font-size: clamp(3em, 10vw, 6em);
-            color: white;
-            letter-spacing: 2px;
-            position: relative;
-            overflow: hidden;
-        }
-        /* The text gets revealed by a clip that expands left to right */
-        .splash-logo span {
-            display: inline-block;
-            opacity: 0;
-            transform: translateY(20px);
-            animation: letterDrop 0.08s ease forwards;
-        }
-        @keyframes letterDrop {
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .splash-tagline {
-            color: rgba(255,255,255,0.75);
-            font-size: 1.05em;
-            letter-spacing: 2px;
-            opacity: 0;
-            animation: fadeUp 0.6s ease 1.4s forwards;
-        }
-        @keyframes fadeUp {
-            from { opacity:0; transform:translateY(10px); }
-            to   { opacity:1; transform:translateY(0); }
-        }
-
-        .splash-bar {
-            width: 160px; height: 3px;
-            background: rgba(255,255,255,0.2);
-            border-radius: 2px; overflow: hidden;
-            opacity: 0;
-            animation: fadeUp 0.4s ease 1.4s forwards;
-        }
-        .splash-bar-fill {
-            height: 100%; width: 0;
-            background: white; border-radius: 2px;
-            animation: barFill 1.2s ease 1.5s forwards;
-        }
-        @keyframes barFill { to { width: 100%; } }
-
-        /* blur the main content while splash is showing */
-        #appRoot { transition: filter 0.7s ease; }
-        body.splashing #appRoot { filter: blur(8px); }
     </style>
 </head>
-<body class="splashing">
-
-    <!-- SPLASH SCREEN -->
-    <div id="splash">
-        <div class="splash-logo" id="splashLogo"></div>
-        <div class="splash-tagline">Your Personal Hub</div>
-        <div class="splash-bar"><div class="splash-bar-fill"></div></div>
-    </div>
-
-    <div id="appRoot">
+<body>
+    <div class="container">
         <header style="position:relative;">
             <button class="dark-toggle" onclick="toggleDarkMode()" id="darkToggleBtn">🌙 Dark</button>
             <h1>🎯 Aadidev's Savings & Study Hub</h1>
@@ -1503,6 +1434,7 @@
             <button class="tab" onclick="switchTab('aichat')" style="white-space:nowrap;min-width:90px;">🤖 AI Chat</button>
             <button class="tab" onclick="switchTab('stories')" style="white-space:nowrap;min-width:90px;">📖 Stories</button>
             <button class="tab" onclick="switchTab('gaming')" style="white-space:nowrap;min-width:90px;">🎮 Gaming</button>
+            <button class="tab" onclick="switchTab('movies')" style="white-space:nowrap;min-width:90px;">🎬 Movies</button>
         </div>
 
         <!-- SAVINGS TAB -->
@@ -1913,21 +1845,47 @@
         <div id="gaming-tab" class="tab-content">
             <div class="section-header">
                 <h2>🎮 Gaming</h2>
+                <button class="btn btn-primary" onclick="openGameEditor()">➕ Add Game</button>
             </div>
 
             <!-- coming soon placeholder + game embed area -->
             <div style="background:linear-gradient(135deg,#1e1b4b,#312e81);border-radius:20px;padding:30px;color:white;margin-bottom:24px;text-align:center;">
                 <div style="font-size:3em;margin-bottom:12px;">🕹️</div>
                 <h3 style="font-size:1.5em;margin-bottom:8px;">Games Arcade</h3>
-                <p style="opacity:0.8;font-size:0.95em;">Send me your games and I'll drop them right in here!</p>
+                <p style="opacity:0.8;font-size:0.95em;">Paste in the HTML code for a game and play it right here!</p>
             </div>
 
             <div id="gamesGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;">
                 <!-- Game cards will be added here -->
                 <div id="gamesEmpty" style="grid-column:1/-1;text-align:center;padding:40px;color:#999;">
                     <div style="font-size:2.5em;margin-bottom:10px;">🎮</div>
-                    <div style="font-weight:600;color:#555;margin-bottom:6px;">No games yet — send them over!</div>
-                    <div style="font-size:0.9em;">I'll build a card for each game and embed them right here.</div>
+                    <div style="font-weight:600;color:#555;margin-bottom:6px;">No games yet!</div>
+                    <div style="font-size:0.9em;">Hit "Add Game" and paste in some HTML to get started.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══════════════════════════════════════
+             MOVIE REVIEWS TAB
+        ══════════════════════════════════════ -->
+        <div id="movies-tab" class="tab-content">
+            <div class="section-header">
+                <h2>🎬 Movie Reviews</h2>
+                <button class="btn btn-primary" onclick="openMovieEditor()">➕ Add Review</button>
+            </div>
+
+            <div style="background:linear-gradient(135deg,#7c2d12,#b91c1c);border-radius:20px;padding:30px;color:white;margin-bottom:24px;text-align:center;">
+                <div style="font-size:3em;margin-bottom:12px;">🍿</div>
+                <h3 style="font-size:1.5em;margin-bottom:8px;">Review Corner</h3>
+                <p style="opacity:0.85;font-size:0.95em;">Rate and review every movie you watch!</p>
+            </div>
+
+            <div id="moviesGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;">
+                <!-- Movie review cards will be added here -->
+                <div id="moviesEmpty" style="grid-column:1/-1;text-align:center;padding:40px;color:#999;">
+                    <div style="font-size:2.5em;margin-bottom:10px;">🎬</div>
+                    <div style="font-weight:600;color:#555;margin-bottom:6px;">No reviews yet!</div>
+                    <div style="font-size:0.9em;">Hit "Add Review" to write your first one.</div>
                 </div>
             </div>
         </div>
@@ -1980,8 +1938,86 @@
         </div>
     </div>
 
+    <!-- GAME ADD/EDIT POPUP -->
+    <div class="popup-overlay" id="gameEditorPopup" style="z-index:2000;">
+        <div class="popup" style="max-width:700px;width:95%;transform:none;background:white;max-height:92vh;display:flex;flex-direction:column;">
+            <button class="close-popup" onclick="closeGameEditor()">×</button>
+            <h3 id="gameEditorTitle">➕ Add a Game</h3>
+            <input type="hidden" id="gameEditId">
+            <div class="form-group">
+                <label>Game Name</label>
+                <input type="text" id="gameNameInput" placeholder="e.g. Snake, Flappy Bird..." style="font-size:1.1em;font-weight:600;">
+            </div>
+            <div class="form-group">
+                <label>Emoji (optional)</label>
+                <input type="text" id="gameEmojiInput" placeholder="🎮" maxlength="4" style="max-width:90px;font-size:1.3em;text-align:center;">
+            </div>
+            <div class="form-group" style="flex:1;display:flex;flex-direction:column;">
+                <label>Paste the game's HTML code</label>
+                <textarea id="gameCodeInput" placeholder="<!DOCTYPE html>..." style="flex:1;min-height:260px;line-height:1.5;font-size:0.9em;font-family:monospace;resize:vertical;" spellcheck="false"></textarea>
+            </div>
+            <div class="popup-actions">
+                <button type="button" class="btn btn-secondary" onclick="closeGameEditor()">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="saveGame()">🕹️ Save Game</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- GAME PLAYER POPUP -->
+    <div class="popup-overlay" id="gamePlayPopup" style="z-index:2000;">
+        <div class="popup" style="max-width:900px;width:95%;transform:none;background:white;max-height:92vh;display:flex;flex-direction:column;padding:18px;">
+            <button class="close-popup" onclick="closeGamePlay()">×</button>
+            <h3 id="gamePlayTitle" style="margin-bottom:12px;">🎮 Playing</h3>
+            <iframe id="gamePlayFrame" style="width:100%;flex:1;min-height:500px;border:2px solid #ddd;border-radius:10px;background:white;" sandbox="allow-scripts allow-pointer-lock allow-same-origin allow-forms"></iframe>
+        </div>
+    </div>
+
+    <!-- MOVIE ADD/EDIT POPUP -->
+    <div class="popup-overlay" id="movieEditorPopup" style="z-index:2000;">
+        <div class="popup" style="max-width:700px;width:95%;transform:none;background:white;max-height:92vh;display:flex;flex-direction:column;">
+            <button class="close-popup" onclick="closeMovieEditor()">×</button>
+            <h3 id="movieEditorTitle">✍️ Add a Movie Review</h3>
+            <input type="hidden" id="movieEditId">
+            <div class="form-group">
+                <label>Movie Title</label>
+                <input type="text" id="movieTitleInput" placeholder="e.g. Spider-Man: Into the Spider-Verse" style="font-size:1.1em;font-weight:600;">
+            </div>
+            <div style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap;">
+                <div class="form-group" style="flex:1;min-width:140px;margin:0;">
+                    <label>Rating (out of 5)</label>
+                    <select id="movieRatingInput">
+                        <option value="5">⭐⭐⭐⭐⭐ (5)</option>
+                        <option value="4">⭐⭐⭐⭐ (4)</option>
+                        <option value="3">⭐⭐⭐ (3)</option>
+                        <option value="2">⭐⭐ (2)</option>
+                        <option value="1">⭐ (1)</option>
+                    </select>
+                </div>
+                <div class="form-group" style="flex:1;min-width:140px;margin:0;">
+                    <label>Genre</label>
+                    <input type="text" id="movieGenreInput" placeholder="e.g. Animation, Action...">
+                </div>
+            </div>
+            <div class="form-group" style="flex:1;display:flex;flex-direction:column;">
+                <label>Your Review</label>
+                <textarea id="movieReviewInput" placeholder="What did you think of it?" style="flex:1;min-height:200px;line-height:1.7;font-size:1em;resize:vertical;"></textarea>
+            </div>
+            <div class="popup-actions">
+                <button type="button" class="btn btn-secondary" onclick="closeMovieEditor()">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="saveMovie()">🎬 Save Review</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MOVIE READ POPUP -->
+    <div class="popup-overlay" id="movieReadPopup" style="z-index:2000;">
+        <div class="popup" style="max-width:700px;width:95%;transform:none;background:white;max-height:92vh;overflow-y:auto;">
+            <button class="close-popup" onclick="closeMovieRead()">×</button>
+            <div id="movieReadContent"></div>
+        </div>
+    </div>
+
     <div id="toastContainer"></div>
-</div><!-- end #appRoot -->
 
     <!-- FLASHCARD ADD POPUP -->
     <div class="popup-overlay" id="addCardPopup">
@@ -2325,6 +2361,10 @@
                 drawWheel();
             } else if (tabName === 'cards') {
                 renderFlashcards();
+            } else if (tabName === 'gaming') {
+                renderGames();
+            } else if (tabName === 'movies') {
+                renderMovies();
             }
         }
 
@@ -4826,25 +4866,225 @@ You can help with: revision strategies, exam tips, maths/science/English/history
         window.addEventListener('DOMContentLoaded', renderStories);
 
         // ============================================================
-        // SPLASH SCREEN
+        // GAMING ARCADE
         // ============================================================
-        (function() {
-            const word = 'DevNation';
-            const logo = document.getElementById('splashLogo');
-            // Drop each letter in with a staggered delay
-            word.split('').forEach((char, i) => {
-                const span = document.createElement('span');
-                span.textContent = char;
-                span.style.animationDelay = (0.1 + i * 0.1) + 's';
-                logo.appendChild(span);
-            });
+        function getGames() { return JSON.parse(localStorage.getItem('hubGames') || '[]'); }
+        function saveGames(arr) { localStorage.setItem('hubGames', JSON.stringify(arr)); }
 
-            // After animation + loading bar (about 2.8s), fade out splash and unblur
-            setTimeout(() => {
-                document.getElementById('splash').classList.add('hide');
-                document.body.classList.remove('splashing');
-            }, 2800);
-        })();
+        function openGameEditor(id = null) {
+            document.getElementById('gameEditorPopup').classList.add('active');
+            document.getElementById('gameEditId').value = id || '';
+            if (id) {
+                const g = getGames().find(x => x.id == id);
+                if (g) {
+                    document.getElementById('gameEditorTitle').textContent = '✏️ Edit Game';
+                    document.getElementById('gameNameInput').value = g.name;
+                    document.getElementById('gameEmojiInput').value = g.emoji || '';
+                    document.getElementById('gameCodeInput').value = g.code;
+                }
+            } else {
+                document.getElementById('gameEditorTitle').textContent = '➕ Add a Game';
+                document.getElementById('gameNameInput').value = '';
+                document.getElementById('gameEmojiInput').value = '';
+                document.getElementById('gameCodeInput').value = '';
+            }
+        }
+
+        function closeGameEditor() { document.getElementById('gameEditorPopup').classList.remove('active'); }
+
+        function saveGame() {
+            const name = document.getElementById('gameNameInput').value.trim();
+            const code = document.getElementById('gameCodeInput').value.trim();
+            if (!name || !code) { showToast('⚠️ Add a name and paste in the game code!', 'info'); return; }
+            const id = document.getElementById('gameEditId').value;
+            let games = getGames();
+            const entry = {
+                id: id || Date.now(),
+                name,
+                emoji: document.getElementById('gameEmojiInput').value.trim() || '🎮',
+                code,
+                date: new Date().toLocaleDateString('en-GB')
+            };
+            if (id) { games = games.map(g => g.id == id ? entry : g); }
+            else { games.unshift(entry); }
+            saveGames(games);
+            closeGameEditor();
+            renderGames();
+            showToast('🕹️ Game saved!', 'success');
+        }
+
+        function deleteGame(id) {
+            if (!confirm('Delete this game?')) return;
+            saveGames(getGames().filter(g => g.id != id));
+            renderGames();
+            showToast('🗑️ Game deleted.', 'info');
+        }
+
+        function openGamePlay(id) {
+            const g = getGames().find(x => x.id == id);
+            if (!g) return;
+            document.getElementById('gamePlayTitle').textContent = `${g.emoji || '🎮'} ${g.name}`;
+            const frame = document.getElementById('gamePlayFrame');
+            frame.srcdoc = g.code;
+            document.getElementById('gamePlayPopup').classList.add('active');
+        }
+
+        function closeGamePlay() {
+            document.getElementById('gamePlayPopup').classList.remove('active');
+            document.getElementById('gamePlayFrame').srcdoc = '';
+        }
+
+        function renderGames() {
+            const grid = document.getElementById('gamesGrid');
+            if (!grid) return;
+            const games = getGames();
+            grid.innerHTML = '';
+            if (games.length === 0) {
+                grid.innerHTML = `<div id="gamesEmpty" style="grid-column:1/-1;text-align:center;padding:40px;color:#999;">
+                    <div style="font-size:2.5em;margin-bottom:10px;">🎮</div>
+                    <div style="font-weight:600;color:#555;margin-bottom:6px;">No games yet!</div>
+                    <div style="font-size:0.9em;">Hit "Add Game" and paste in some HTML to get started.</div></div>`;
+                return;
+            }
+            games.forEach(g => {
+                const card = document.createElement('div');
+                card.className = 'story-card';
+                card.innerHTML = `
+                    <div class="story-card-banner" style="background:linear-gradient(135deg,#1e1b4b,#312e81);">
+                        ${g.emoji || '🎮'}
+                    </div>
+                    <div class="story-card-body">
+                        <div style="font-size:1.15em;font-weight:700;color:#1f2937;">${escapeHtml(g.name)}</div>
+                        <div style="font-size:0.78em;color:#9ca3af;margin-top:auto;padding-top:6px;">Added ${g.date}</div>
+                    </div>
+                    <div class="story-card-actions">
+                        <button class="btn btn-secondary" style="font-size:0.82em;padding:6px 12px;" onclick="event.stopPropagation();openGameEditor(${g.id})">✏️ Edit</button>
+                        <button class="btn" style="font-size:0.82em;padding:6px 12px;background:#fee2e2;color:#dc2626;" onclick="event.stopPropagation();deleteGame(${g.id})">🗑️</button>
+                        <button class="btn btn-primary" style="font-size:0.82em;padding:6px 12px;" onclick="event.stopPropagation();openGamePlay(${g.id})">▶️ Play</button>
+                    </div>`;
+                grid.appendChild(card);
+            });
+        }
+
+        // ============================================================
+        // MOVIE REVIEWS
+        // ============================================================
+        function getMovies() { return JSON.parse(localStorage.getItem('hubMovies') || '[]'); }
+        function saveMovies(arr) { localStorage.setItem('hubMovies', JSON.stringify(arr)); }
+
+        function openMovieEditor(id = null) {
+            document.getElementById('movieEditorPopup').classList.add('active');
+            document.getElementById('movieEditId').value = id || '';
+            if (id) {
+                const m = getMovies().find(x => x.id == id);
+                if (m) {
+                    document.getElementById('movieEditorTitle').textContent = '✏️ Edit Review';
+                    document.getElementById('movieTitleInput').value = m.title;
+                    document.getElementById('movieRatingInput').value = m.rating;
+                    document.getElementById('movieGenreInput').value = m.genre || '';
+                    document.getElementById('movieReviewInput').value = m.review;
+                }
+            } else {
+                document.getElementById('movieEditorTitle').textContent = '✍️ Add a Movie Review';
+                document.getElementById('movieTitleInput').value = '';
+                document.getElementById('movieRatingInput').value = '5';
+                document.getElementById('movieGenreInput').value = '';
+                document.getElementById('movieReviewInput').value = '';
+            }
+        }
+
+        function closeMovieEditor() { document.getElementById('movieEditorPopup').classList.remove('active'); }
+
+        function saveMovie() {
+            const title = document.getElementById('movieTitleInput').value.trim();
+            const review = document.getElementById('movieReviewInput').value.trim();
+            if (!title || !review) { showToast('⚠️ Add a title and your review!', 'info'); return; }
+            const id = document.getElementById('movieEditId').value;
+            let movies = getMovies();
+            const entry = {
+                id: id || Date.now(),
+                title,
+                rating: parseInt(document.getElementById('movieRatingInput').value, 10),
+                genre: document.getElementById('movieGenreInput').value.trim(),
+                review,
+                date: new Date().toLocaleDateString('en-GB')
+            };
+            if (id) { movies = movies.map(m => m.id == id ? entry : m); }
+            else { movies.unshift(entry); }
+            saveMovies(movies);
+            closeMovieEditor();
+            renderMovies();
+            showToast('🎬 Review saved!', 'success');
+        }
+
+        function deleteMovie(id) {
+            if (!confirm('Delete this review?')) return;
+            saveMovies(getMovies().filter(m => m.id != id));
+            renderMovies();
+            showToast('🗑️ Review deleted.', 'info');
+        }
+
+        function openMovieRead(id) {
+            const m = getMovies().find(x => x.id == id);
+            if (!m) return;
+            const stars = '⭐'.repeat(m.rating) + '☆'.repeat(5 - m.rating);
+            document.getElementById('movieReadContent').innerHTML = `
+                <div style="background:linear-gradient(135deg,#7c2d12,#b91c1c33);border-radius:12px;padding:20px;margin-bottom:20px;">
+                    <div style="font-size:2.5em;margin-bottom:8px;">🎬</div>
+                    <h2 style="font-size:1.6em;color:#1f2937;margin-bottom:6px;">${escapeHtml(m.title)}</h2>
+                    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+                        <span style="font-size:1.1em;">${stars}</span>
+                        ${m.genre ? `<span class="story-badge" style="background:#b91c1c;">${escapeHtml(m.genre)}</span>` : ''}
+                        <span style="font-size:0.82em;color:#666;">${m.date}</span>
+                    </div>
+                </div>
+                <div style="line-height:1.85;font-size:1.02em;color:#1f2937;white-space:pre-wrap;">${escapeHtml(m.review)}</div>`;
+            document.getElementById('movieReadPopup').classList.add('active');
+        }
+
+        function closeMovieRead() { document.getElementById('movieReadPopup').classList.remove('active'); }
+
+        function renderMovies() {
+            const grid = document.getElementById('moviesGrid');
+            if (!grid) return;
+            const movies = getMovies();
+            grid.innerHTML = '';
+            if (movies.length === 0) {
+                grid.innerHTML = `<div id="moviesEmpty" style="grid-column:1/-1;text-align:center;padding:40px;color:#999;">
+                    <div style="font-size:2.5em;margin-bottom:10px;">🎬</div>
+                    <div style="font-weight:600;color:#555;margin-bottom:6px;">No reviews yet!</div>
+                    <div style="font-size:0.9em;">Hit "Add Review" to write your first one.</div></div>`;
+                return;
+            }
+            movies.forEach(m => {
+                const stars = '⭐'.repeat(m.rating) + '☆'.repeat(5 - m.rating);
+                const preview = m.review.length > 110 ? m.review.slice(0,110) + '…' : m.review;
+                const card = document.createElement('div');
+                card.className = 'story-card';
+                card.innerHTML = `
+                    <div class="story-card-banner" style="background:linear-gradient(135deg,#7c2d12,#b91c1c);">
+                        🎬
+                    </div>
+                    <div class="story-card-body">
+                        <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
+                            <span style="font-size:0.95em;">${stars}</span>
+                            ${m.genre ? `<span class="story-badge" style="background:#b91c1c;">${escapeHtml(m.genre)}</span>` : ''}
+                        </div>
+                        <div style="font-size:1.15em;font-weight:700;color:#1f2937;margin-top:4px;">${escapeHtml(m.title)}</div>
+                        <div style="font-size:0.86em;color:#6b7280;line-height:1.5;">${escapeHtml(preview)}</div>
+                        <div style="font-size:0.78em;color:#9ca3af;margin-top:auto;padding-top:6px;">${m.date}</div>
+                    </div>
+                    <div class="story-card-actions">
+                        <button class="btn btn-secondary" style="font-size:0.82em;padding:6px 12px;" onclick="event.stopPropagation();openMovieEditor(${m.id})">✏️ Edit</button>
+                        <button class="btn" style="font-size:0.82em;padding:6px 12px;background:#fee2e2;color:#dc2626;" onclick="event.stopPropagation();deleteMovie(${m.id})">🗑️</button>
+                        <button class="btn btn-primary" style="font-size:0.82em;padding:6px 12px;" onclick="event.stopPropagation();openMovieRead(${m.id})">📖 Read</button>
+                    </div>`;
+                grid.appendChild(card);
+            });
+        }
+
+        window.addEventListener('DOMContentLoaded', renderGames);
+        window.addEventListener('DOMContentLoaded', renderMovies);
 
     </script>
 </body>
